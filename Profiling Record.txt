@@ -1,0 +1,305 @@
+Profiling Record
+
+- Comparitive timings for successive optimizations.
+- Raspberry PI 4 B Neon/ARCH32. ARM A72 @1.5GHz.
+
+
+
+64-bit float.
+Generating 5 seconds of audio...
+nlSolve: 26.5263
+  Invert: 14.5586     / 6
+  Calc: 2.91986
+  Matrix: 6.23916
+     fnlMul: 2.31507
+     JMul: 1.15117
+     FMul: 2.7677
+Total: 27.0864
+Avg Iterations: 7.62928 n: 240000
+Writing 5 seconds of audio...
+
+Generating 5 seconds of audio...
+nlSolve: 20.94
+  Invert: 11.0551
+  Calc: 1.84952
+  Matrix: 5.60701
+     fnlMul: 2.07509
+     JMul: 1.04507
+     FMul: 2.49403
+Total: 21.4617
+Avg Iterations: 6.67404 n: 240000
+(No timing:  14.0891)
+
+32-bit ARM Neon/custom invert
+nlSolve: 13.394
+  Invert: 3.79274
+  Calc: 1.83937
+  Matrix: 5.43636
+     fnlMul: 2.02887
+     JMul: 1.05327
+     FMul: 2.35395
+Total: 13.8679
+Avg Iterations: 6.69235 n: 240000
+(no timing: Total: 6.8568)
+
+// fnlMul -> arm multiply.
+Generating 5 seconds of audio...
+nlSolve: 13.4255
+  Invert: 4.17163
+  Calc: 1.77689
+  Matrix: 5.09383
+     fnlMul: 1.67779
+     JMul: 1.02616
+     FMul: 2.38622
+Total: 13.9238
+Avg Iterations: 6.69235 n: 240000
+(no timing: Total: 6.94315
+
+
+// FMul -> arm multiply.
+Generating 5 seconds of audio...
+nlSolve: 12.7405
+  Invert: 4.18804
+  Calc: 1.78549
+  Matrix: 4.44663
+     fnlMul: 1.59798
+     JMul: 1.07599
+     FMul: 1.7652
+Total: 13.2825
+Avg Iterations: 6.69223 n: 240000
+(no timing: Total: 6.1557)
+
+// NEON Matrix Inversion (upper triangle)
+nlSolve: 11.1274
+  Invert: 2.64119
+  Calc: 1.80406
+  Matrix: 4.3588
+     fnlMul: 1.59213
+     JMul: 1.0212
+     FMul: 1.74301
+Total: 11.6754
+TMin: 0.773525
+Avg Iterations: 6.69223 n: 240000
+(no timing: Total: 4.7791)
+
+// NEON Matrix Inversion (full)
+nlSolve: 10.7342
+  Invert: 2.12231  = 1.3462  <-- another 12.5% here (don't process zero-quadrant on backsolve).   .1s
+  Calc: 1.79644  - 1.02 
+  Matrix: 4.40613
+     fnlMul: 1.61433 = 0.83783         .6
+     JMul: 1.03292 = 0.254
+     FMul: 1.75972 = 0.982  <-- ?!??!  .6
+
+Total: 11.2573      4.426 accounted for. :-/
+TMin: 0.776405
+Avg Iterations: 6.69223 n: 240000
+(no timing: Total: 4.00129) 
+
+
+// Minor optimization: neon_zero, refactor alpha expression, both showing up in total only.
+nlSolve: 10.6637
+  Invert: 2.1477
+  Calc: 1.80057
+  Matrix: 4.3744
+     fnlMul: 1.60598
+     JMul: 1.01271
+     FMul: 1.75342
+Total: 11.1605
+TMin: 0.778281
+Avg Iterations: 6.69042 n: 240000
+
+// neon_add/sub_vec8 
+Generating 5 seconds of audio...
+nlSolve: 10.6016
+  Invert: 2.10867   <-- .14s here?
+  Calc: 1.79739
+  Matrix: 4.34124
+     fnlMul: 1.60377  <--- something seriously wrong here.
+     JMul: 1.00973
+     FMul: 1.72544    <--- !!!!.
+Total: 11.1297
+TMin: 0.777115
+Avg Iterations: 6.69042 n: 240000
+(no timing: Total: 3.92932)
+
+// Unrolled 881 multiply
+Generating 5 seconds of audio...
+nlSolve: 10.5901
+  Invert: 2.084
+  Calc: 1.83404
+  Matrix: 4.31793
+     fnlMul: 1.59707
+     JMul: 1.00367
+     FMul: 1.7148
+Total: 11.123
+TMin: 0.773142
+Avg Iterations: 6.69042 n: 240000
+(no timing: Total: 3.96385)
+
+ALIGNED_16
+nlSolve: 10.442
+  Invert: 2.08861
+  Calc: 1.78076
+  Matrix: 4.2882
+     fnlMul: 1.59048
+     JMul: 0.994612
+     FMul: 1.7041
+Total: 10.9228
+TMin: 0.770752
+Avg Iterations: 6.69177 n: 240000
+
+// corrected dF/dy calculation.
+nlSolve: 9.8673
+  Invert: 1.88241
+  Calc: 1.77607
+  Matrix: 3.95807
+     fnlMul: 1.47231
+     JMul: 0.917826
+     FMul: 1.5798
+Total: 10.3705
+TMin: 0.707572
+Avg Iterations: 6.06955 n: 240000
+(no timing: Total: 3.61546) 
+
+
+Generating 5 seconds of audio...
+nlSolve: 9.78654
+  Invert: 1.88376  1.14289
+  Calc: 1.67902  0.93815
+  Matrix: 4.03703
+     fnlMul: 1.4751  0.734233 881 + 2 vector additions.
+     JMul: 0.938986  0.198114
+     FMul: 1.59947  0.858599  8x17
+Total: 10.2573
+TMin: 0.740872
+Avg Iterations: 6.06955 n: 240000
+(no timing: Total: 3.61546) 
+                   2.81
+                    0.80 outside of instrumentation.
+
+// Provide constant R/C to neon_matrix_x_vec
+Total: 3.58253
+
+// Convert solutionNs lines to neon
+nlSolve: 9.49835
+  Invert: 1.85639  1.13945
+  Calc: 1.65303  0.936082
+  Matrix: 3.93616
+     fnlMul: 1.45258  0.735632   ---??!
+     JMul: 0.916199  0.199252
+     FMul: 1.56016  0.84321
+  soln: 0.191528  0.0720365
+Total: 9.99002
+TMin: 0.716947
+Avg Iterations: 6.06955 n: 240000
+Slow interpolations: 26524   -- 1.8%
+Total: 3.23801
+
+/=====
+lSolve: 9.58091
+  Invert: 1.8577  1.14721
+  Calc: 1.71405  1.00355
+  Matrix: 3.93555
+     fnlMul: 1.43457  0.72408
+     JMul: 0.933576  0.223083
+     FMul: 1.55567  0.845178
+  soln: 0.194353  0.0759372
+Total: 10.0662
+TMin: 0.710493
+Avg Iterations: 6.06955 n: 240000
+Slow interpolations: 26524
+
+// calculate to NEON
+nlSolve: 9.44763
+  Invert: 1.86454  1.15679
+  Calc: 1.63387  0.926128
+  Matrix: 3.90857
+     fnlMul: 1.43684  0.729096
+     JMul: 0.91781  0.210066
+     FMul: 1.54823  0.84049
+  soln: 0.197951  0.079994
+Total: 9.94037
+TMin: 0.707744
+Avg Iterations: 6.06796 n: 240000
+Slow interpolations: 26514   <-- about 1/2 of time in slow iterations.
+Total: 3.2357
+
+Total: 3.19301 // more optimizations
+
+// 1d table interpolation to simpler Poly(3) evaluation, improved interpolator precision
+nlSolve: 9.3483
+  Invert: 1.83104  1.13238
+  Calc: 1.5294  0.830736
+  Matrix: 3.93998
+     fnlMul: 1.44613  0.747464
+     JMul: 0.942969  0.244306
+     FMul: 1.54858  0.849913
+  soln: 0.19496  0.0785161
+Total: 9.79745
+TMin: 0.698662
+Avg Iterations: 6.06224 n: 240000
+Slow interpolations: 150
+Total: 3.16806
+
+// error calculating fnlMul timing
+nlSolve: 8.60171
+  Invert: 1.82668  1.11975
+  Calc: 1.52613  0.819196
+  Matrix: 3.2345
+     fnlMul: 0.741638  0.034705
+     JMul: 0.931647  0.224714
+     FMul: 0.854282  0.147349
+  soln: 0.196592  0.0787699
+Total: 9.06145
+TMin: 0.706933
+Avg Iterations: 6.06224 n: 240000
+Slow interpolations: 150
+
+// added preamble timing.
+nlSolve: 8.79003
+  Invert: 1.84083  1.13339
+  Calc: 1.52437  0.81693
+  Matrix: 3.1664
+     fnlMul: 0.735159  0.0277225
+     JMul: 0.906809  0.199373
+     FMul: 0.817  0.109564
+  preamble: 1.1724  1.0545
+  soln: 0.206072  0.0881657
+Total: 9.2657 accounted for: 3.42965
+TMin: 0.707436
+Avg Iterations: 6.06227 n: 240000
+Slow interpolations: 150
+
+// optimized preamble.
+nlSolve: 8.75665
+  Invert: 1.83748  1.11889
+  Calc: 1.5124  0.793809
+  Matrix: 3.22848
+     fnlMul: 0.749368  0.0307816
+     JMul: 0.92432  0.205734
+     FMul: 0.836203  0.117617
+  preamble: 1.07582  0.956056
+  soln: 0.202407  0.0826428
+Total: 9.23788 accounted for: 3.30553
+TMin: 0.718586
+Avg Iterations: 6.06227 n: 240000
+Slow interpolations: 150
+Total: 3.08526   ?? Wrong cpu speed?
+
+// double rows on inverse backsolve.
+nlSolve: 8.76202
+  Invert: 1.87463  1.17461
+  Calc: 1.51248  0.812467
+  Matrix: 3.19518
+     fnlMul: 0.736186  0.0361757
+     JMul: 0.929703  0.229693
+     FMul: 0.829285  0.129275
+  preamble: 1.07648  0.959807
+  soln: 0.19151  0.0748418
+Total: 9.25495 accounted for: 3.41687
+TMin: 0.70001
+Avg Iterations: 6.06227 n: 240000
+Slow interpolations: 150
+2.96983
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+cmake --build $PWD/build --config Release --target install 
+
+
