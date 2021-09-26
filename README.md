@@ -1,4 +1,4 @@
-#jtm45
+# jtm45
 
 A port of the JTM45 Amp Emulator LV2 Plugin, highly optimized for Raspberry Pi 4/aarch64. Runs about 23x faster
 than the original code. 
@@ -9,15 +9,15 @@ boost your CPU speed to 1750MHz to get it to run. You may need to run on a realt
 Tested on Ubuntu Studio for ARM 64-bit hosted by PiPedal. 
 
 
-Based on the https://github.com/MaxPayne86/rt-wdf_lv2
+Based the https://github.com/MaxPayne86/rt-wdf_lv2
 
-# rt-wdf_lv2
+    # rt-wdf_lv2
 
 
-Implementation of LV2 audio plugins using rt-wdf library
+    Implementation of LV2 audio plugins using rt-wdf library
 
-Documentation on rt-wdf library can be found [here](http://dafx16.vutbr.cz/dafxpapers/40-DAFx-16_paper_35-PN.pdf)
+    Documentation on rt-wdf library can be found [here](http://dafx16.vutbr.cz/dafxpapers/40-DAFx-16_paper_35-PN.pdf)
 
-LV2 plugins:
+    LV2 plugins:
 
-- JTM45
+    - JTM45
