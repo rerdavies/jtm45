@@ -9,9 +9,9 @@ boost your CPU speed to 1750MHz to get it to run. You may need to run on a realt
 Tested on Ubuntu Studio for ARM 64-bit hosted by PiPedal. 
 
 
-Based the https://github.com/MaxPayne86/rt-wdf_lv2
+Based on https://github.com/MaxPayne86/rt-wdf_lv2
 
-    # rt-wdf_lv2
+    *rt-wdf_lv2*
 
 
     Implementation of LV2 audio plugins using rt-wdf library
