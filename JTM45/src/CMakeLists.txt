@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.18)
 
 include(FindPkgConfig)
 # set (ARM_NEON_CFLAGS "-mfpu=neon -funsafe-math-optimizations  -mfloat-abi=hard")
-set (ARM_NEON_CFLAGS "-mcpu=cortex-a72 -mtune=cortex-a72 -funsafe-math-optimizations  -mfloat-abi=hard -mfpu=neon-fp-armv8 -ftree-vectorize ")
+set (ARM_NEON_CFLAGS "-mcpu=cortex-a72 -mtune=cortex-a72 -funsafe-math-optimizations  -ftree-vectorize ")
 set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-psabi -Werror ${ARM_NEON_CFLAGS}"  )
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} )
 
@@ -47,7 +47,7 @@ target_link_libraries(jtm45
     rt-wdf blas lapack
     )
 
-set(INSTALL_PATH /usr/local/lib/lv2)
+set(INSTALL_PATH /usr/lib/lv2)
 set(COMPLETE_INSTALL_PATH "${INSTALL_PATH}/jtm45.lv2")
 
 

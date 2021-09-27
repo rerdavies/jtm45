@@ -15,7 +15,7 @@ set(CMAKE_INSTALL_PREFIX /usr)
 
 
 # set (ARM_NEON_CFLAGS "-mfpu=neon -funsafe-math-optimizations  -mfloat-abi=hard")
-set (ARM_NEON_CFLAGS "-mcpu=cortex-a72 -mtune=cortex-a72 -funsafe-math-optimizations  -mfloat-abi=hard -mfpu=neon-fp-armv8 -ftree-vectorize -fPIC ")
+set (ARM_NEON_CFLAGS "-mcpu=cortex-a72 -mtune=cortex-a72 -funsafe-math-optimizations  -ftree-vectorize -fPIC ")
 set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-psabi -Werror ${ARM_NEON_CFLAGS}"  )
 
 include_directories((${ARMADILLO_INCLUDE_DIRS}))

@@ -3,6 +3,7 @@
 #include <chrono>
 #include <catch/catch.hpp>
 #include "AudioFile.h"
+// apt install libgoogle-perftools-dev
 #include <gperftools/profiler.h>
 
 using namespace std::chrono;
