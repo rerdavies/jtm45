@@ -110,13 +110,13 @@ public:
 		setSamplerate(48000);
 
         paramData inputGain;
-        inputGain.name = "Input Gain";
+        inputGain.name = "Input Trim";
         inputGain.ID = 1;
         inputGain.type = doubleParam;
         inputGain.value = 0.1;
         inputGain.units = " ";
         inputGain.lowLim = 0;
-        inputGain.highLim = 1;
+        inputGain.highLim = 200;
         params.push_back(inputGain);
 
         paramData volumeParam;
@@ -128,6 +128,18 @@ public:
         volumeParam.lowLim = 0;
         volumeParam.highLim = 1;
         params.push_back(volumeParam);
+
+
+        paramData trimParam;
+        trimParam.name = "Output Trim";
+        trimParam.ID = 2;
+        trimParam.type = doubleParam;
+        trimParam.value = 1;
+        trimParam.units = " ";
+        trimParam.lowLim = 0;
+        trimParam.highLim = 32;
+        params.push_back(trimParam);
+
 
 		RGB1A.reset( new wdfTerminatedRes(RGB1A_val) );
 		RGB1B.reset( new wdfTerminatedRes(RGB1B_val) );
@@ -884,7 +896,7 @@ public:
 	}
 
 	rt_float getOutputValue() {
-		return (RK3->upPort->getPortVoltage() - 180.0) / 200.0;
+		return (RK3->upPort->getPortVoltage() - 180.0) / 200.0* params[2].value;
 	}
 
 	const char* getTreeIdentifier() {
@@ -892,7 +904,7 @@ public:
 	}
 
 	void setParam(size_t paramID, rt_float paramValue) {
-		if (paramID == 0) { // Volume
+		if (paramID == 0) { // Trim
             params[0].value = paramValue;
         } else if (paramID == 1) { // Gain
         	params[1].value = paramValue;
@@ -901,6 +913,9 @@ public:
         	RVNN->R = RVol * params[1].value;
         	RVNP->R = RVol * (1 - params[1].value);
             adaptTree();
-        }
+        } else if (paramID == 2) // Volume
+		{
+			params[2].value = paramValue;
+		}
 	}
 };
