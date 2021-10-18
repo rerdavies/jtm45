@@ -27,7 +27,6 @@ add_compile_definitions(jtm45test ARMA_DONT_USE_WRAPPER)
 
 target_link_libraries(jtm45test 
     rt-wdf blas lapack
-    profiler
 
     )
 
