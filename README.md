@@ -1,5 +1,9 @@
 # jtm45 Amp Emulation LV2 Plugin (ARM aarch64)
 
+*It has come to my attention that the base files used in this project use data that has not been generated for the correct sampling rate (it's generated for 4x oversampling at 48KHz). Unfortunately, the code used to generate the data has not been open-sourced. I'm working on a (fairly substantial) solution to this. Please stay tuned.*
+
+*In the meantime, this plugin makes a very pretty noise, but not one that a jtm45 would make. Modify your expectations accordingly.*
+
 A JTM45 Amp Emulator LV2 Plugin for Raspberry PI 4 devices running a 64-bit operating system. The emulator uses real-time WDF analog modelling techniques to model JTM45 power stage circuitry using code developed and published by  Maximilian Rest, W. Ross Dunkel, Kurt James Werner and Julius O. Smith. 
 
 Note that the JTM45 power stage differs only in very small details from a Fender Bassman.
